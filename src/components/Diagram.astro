@@ -1,0 +1,119 @@
+---
+import { layout, traceSteps } from '../lib/diagram.ts';
+import type { Diagram } from '../lib/schema.ts';
+
+interface Props {
+  diagram: Diagram;
+  /** Thumbnail mode: no labels or controls, edges of the first trace flow continuously (CSS only). */
+  compact?: boolean;
+  /** Unique per instance on a page, so SVG marker ids never collide. */
+  uid: string;
+  label?: string;
+}
+const { diagram, compact = false, uid, label = 'Architecture diagram' } = Astro.props;
+const L = layout(diagram);
+const first = diagram.traces[0]!;
+const litNodes = new Set(first.path);
+const litEdges = new Set(traceSteps(first).flatMap((s) => (s.edgeKey ? [s.edgeKey] : [])));
+const lastId = first.path[first.path.length - 1];
+const labels = Object.fromEntries(L.nodes.map((n) => [n.id, n.label]));
+const summary = `${label}: ${L.nodes.map((n) => n.label).join(', ')}.`;
+---
+
+<figure
+  class:list={['diagram', { compact }]}
+  data-diagram={compact ? undefined : ''}
+  data-traces={compact ? undefined : JSON.stringify(diagram.traces)}
+  data-labels={compact ? undefined : JSON.stringify(labels)}
+>
+  {
+    !compact && (
+      <div class="diagram-tabs" role="group" aria-label="Choose which request to trace">
+        {diagram.traces.map((t, i) => (
+          <button type="button" class="chip" data-trace={t.id} data-kind={t.kind} aria-pressed={i === 0 ? 'true' : 'false'}>
+            {t.label}
+          </button>
+        ))}
+        <button type="button" class="btn btn-sm replay" data-replay>
+          ↻ Replay
+        </button>
+      </div>
+    )
+  }
+  <div class="diagram-scroll">
+    <svg viewBox={`0 0 ${L.w} ${L.h}`} xmlns="http://www.w3.org/2000/svg" role="img" aria-label={summary} focusable="false">
+      <defs>
+        <marker id={`${uid}-arr`} viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path class="edge-arrow" d="M0,0 L10,5 L0,10 z"></path>
+        </marker>
+      </defs>
+      <g>
+        {
+          L.edges.map((e) => {
+            const key = `${e.from}>${e.to}`;
+            return (
+              <g class:list={['edge', { lit: litEdges.has(key), blocked: first.kind === 'blocked' }]} data-key={key}>
+                <path class="edge-line" d={e.d} marker-end={`url(#${uid}-arr)`}></path>
+                <path class="edge-case" d={e.d}></path>
+                <path class="edge-lit" d={e.d} pathLength="1"></path>
+                {!compact && e.label && (
+                  <text class="edge-label" x={e.lx} y={e.ly} text-anchor={e.anchor}>
+                    {e.label}
+                  </text>
+                )}
+              </g>
+            );
+          })
+        }
+      </g>
+      <g>
+        {
+          L.nodes.map((n) => (
+            <g
+              class:list={[
+                'node',
+                `kind-${n.kind}`,
+                { lit: litNodes.has(n.id), [first.kind === 'blocked' ? 'end-blocked' : 'end-ok']: n.id === lastId },
+              ]}
+              data-id={n.id}
+            >
+              <rect class="node-shadow" x={n.x + 5} y={n.y + 5} width={n.w} height={n.h} rx="9" />
+              <rect class="node-glow" x={n.x - 7} y={n.y - 7} width={n.w + 14} height={n.h + 14} rx="14" />
+              <rect class="node-body" x={n.x} y={n.y} width={n.w} height={n.h} rx="9" />
+              {!compact && (
+                <>
+                  <text class="n-label" x={n.x + 14} y={n.y + (n.sub ? 28 : 38)}>
+                    {n.label}
+                  </text>
+                  {n.sub && (
+                    <text class="n-sub" x={n.x + 14} y={n.y + 48}>
+                      {n.sub}
+                    </text>
+                  )}
+                </>
+              )}
+            </g>
+          ))
+        }
+      </g>
+      {!compact && <circle class="trace-dot" r="6" cx="0" cy="0"></circle>}
+    </svg>
+  </div>
+  {
+    !compact && (
+      <figcaption>
+        <p class="trace-outcome" data-outcome data-kind={first.kind} aria-live="polite">
+          {first.outcome}
+        </p>
+        <ol class="trace-steps" data-steps aria-label="Steps in the selected trace">
+          {first.path.map((id, i) => (
+            <li class:list={['on', { blocked: first.kind === 'blocked' && i === first.path.length - 1 }]} data-node={id}>
+              {labels[id]}
+            </li>
+          ))}
+        </ol>
+        <p>{diagram.caption}</p>
+      </figcaption>
+    )
+  }
+</figure>

@@ -1,0 +1,31 @@
+---
+import { site } from '../data/site.ts';
+import { url } from '../lib/url.ts';
+---
+
+<div class="wrap">
+  <h2 class="sec-title">About me</h2>
+  <div class="about-grid">
+    <div class="portrait">
+      {site.photo ? <img src={url(site.photo)} alt={`Portrait of ${site.fullName}`} width="400" height="400" loading="lazy" /> : <span aria-hidden="true">AP</span>}
+    </div>
+    <div class="about-copy">
+      {site.about.map((p) => <p>{p}</p>)}
+      <dl class="facts">
+        <div><dt>Based in</dt><dd>{site.location}</dd></div>
+        {site.education.map((e) => <div><dt>Education</dt><dd>{e.degree}, {e.school}, {e.when}</dd></div>)}
+        <div><dt>Focus</dt><dd>{site.focus.replaceAll(' · ', ', ')}</dd></div>
+      </dl>
+      <dl class="skills">
+        {site.skills.map((x) => <div><b>{x.label}</b>{x.items}</div>)}
+      </dl>
+      <div class="contact">
+        <a class="btn" href={site.github} rel="me noopener">GitHub: Adilmp ↗</a>
+        {site.cv && <a class="btn btn-alt" href={url(site.cv)} download={site.cvFilename}>Download CV</a>}
+        {site.email && <a class="btn btn-ghost" href={`mailto:${site.email}`}>{site.email}</a>}
+        {site.linkedin && <a class="btn btn-ghost" href={site.linkedin} rel="me noopener">LinkedIn ↗</a>}
+      </div>
+    </div>
+  </div>
+
+</div>

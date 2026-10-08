@@ -1,0 +1,76 @@
+name: Deploy
+
+# The deploy is gated on the portfolio's own test suite: if a cited number is not in the file it
+# cites, or a test fails, nothing is published.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.2.2
+
+      - uses: actions/setup-node@v4.4.0
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Work out where the site is served from
+        run: |
+          owner="${GITHUB_REPOSITORY%%/*}"
+          repo="${GITHUB_REPOSITORY##*/}"
+          if [ "${repo,,}" = "${owner,,}.github.io" ]; then
+            echo "SITE_BASE=/" >> "$GITHUB_ENV"
+            echo "SITE_URL=https://${owner,,}.github.io" >> "$GITHUB_ENV"
+          else
+            echo "SITE_BASE=/${repo}" >> "$GITHUB_ENV"
+            echo "SITE_URL=https://${owner,,}.github.io" >> "$GITHUB_ENV"
+          fi
+
+      - run: npm ci
+
+      - name: Verify every receipt against its pinned file
+        run: npm run check
+
+      - name: Tests
+        run: npm test
+
+      - name: Type check
+        run: npm run check:types
+        env:
+          ASTRO_TELEMETRY_DISABLED: "1"
+
+      - name: Build
+        run: npm run build
+        env:
+          ASTRO_TELEMETRY_DISABLED: "1"
+
+      - name: Every internal link and anchor resolves
+        run: npm run check:links
+
+      - uses: actions/upload-pages-artifact@v3.0.1
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4.0.5

@@ -1,0 +1,164 @@
+---
+import { getCollection, render } from 'astro:content';
+import AssertionTable from '../../components/AssertionTable.astro';
+import Chart from '../../components/Chart.astro';
+import Diagram from '../../components/Diagram.astro';
+import FailureCard from '../../components/FailureCard.astro';
+import VerdictBar from '../../components/VerdictBar.astro';
+import { site } from '../../data/site.ts';
+import Base from '../../layouts/Base.astro';
+import { receiptUrl, repoUrl, shortRef } from '../../lib/receipts.ts';
+import { suiteStats } from '../../lib/stats.ts';
+import { url } from '../../lib/url.ts';
+import { projectTally } from '../../lib/verdict.ts';
+import { projectColor } from '../../lib/colors.ts';
+
+export async function getStaticPaths() {
+  const all = (await getCollection('projects')).filter((e) => e.data.tier === 'flagship').sort((a, b) => a.data.order - b.data.order);
+  return all.map((entry, i) => ({
+    params: { slug: entry.id },
+    props: {
+      entry,
+      index: i,
+      total: all.length,
+      prev: all[i - 1] ? { id: all[i - 1]!.id, title: all[i - 1]!.data.title } : null,
+      next: all[i + 1] ? { id: all[i + 1]!.id, title: all[i + 1]!.data.title } : null,
+    },
+  }));
+}
+
+const { entry, index, total, prev, next } = Astro.props;
+const p = entry.data;
+const { Content } = await render(entry);
+const tally = projectTally(p);
+const color = projectColor(index);
+const allFlagship = (await getCollection('projects')).filter((e) => e.data.tier === 'flagship');
+const stats = suiteStats(allFlagship.map((e) => ({ id: e.id, data: e.data, body: e.body ?? '' })));
+
+const isWide = (c: (typeof p.charts)[number], i: number) =>
+  c.type === 'stack' || (c.type === 'bars' && (c.orientation === 'h' || c.bars.length > 8)) || (i === p.charts.length - 1 && p.charts.length % 2 === 1);
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareSourceCode',
+  name: p.title,
+  description: p.summary,
+  author: { '@type': 'Person', name: site.fullName, url: site.url },
+  codeRepository: p.repos[0] ? repoUrl(p.repos[0]) : undefined,
+  programmingLanguage: p.stack.slice(0, 3),
+};
+---
+
+<Base title={`${p.title} | ${site.name}`} description={p.summary} image={`/og/${entry.id}.png`} jsonLd={jsonLd} receipts={stats.receipts}>
+  <article class="cs" data-c={color}>
+    <div class="cs-banner">
+      <div class="wrap">
+        <a class="crumb" href={url('/#projects')}>← All projects</a>
+        <p class="kicker"><span>Project {index + 1} of {total}</span>{p.period && <span>{p.period}</span>}</p>
+        <h1>{p.title}</h1>
+      </div>
+    </div>
+    <header class="wrap cs-head" id="top">
+      <p class="lede">{p.tagline}</p>
+      {p.role && <p class="role-line"><b>What I did</b>{p.role}</p>}
+      <div class="meta-row">
+        <VerdictBar tally={tally} />
+        <div class="tags">{p.stack.map((s) => <span class="tag">{s}</span>)}</div>
+      </div>
+      <div class="link-row">
+        {
+          p.repos.map((r) => (
+            <a class="btn btn-sm" href={repoUrl(r)} rel="noopener">
+              Code: {r.name} ↗
+            </a>
+          ))
+        }
+        {p.links.map((l) => <a class="btn btn-sm btn-ghost" href={l.url} rel="noopener">{l.label} ↗</a>)}
+      </div>
+      <p class="pin-note">
+        Every number on this page links to the file it came from, pinned to {p.repos.filter((r) => r.ref).map((r) => `${r.name} @ ${shortRef(r)}`).join(' and ')}.
+      </p>
+
+      <h2 class="sr">Headline results</h2>
+      <div class="metrics">
+        {
+          p.headline.map((h) => (
+            <div class="metric">
+              <b>{h.value}</b>
+              <span>{h.label}</span>
+              {h.note && <small>{h.note}</small>}
+              <small>
+                <a href={receiptUrl(p, h.receipt)} rel="noopener">See where it comes from ↗</a>
+              </small>
+            </div>
+          ))
+        }
+      </div>
+    </header>
+
+    <div class="wrap">
+      <section class="cs-section" id="story">
+        <h2 class="sec-title">The short version</h2>
+        <div class="prose"><Content /></div>
+      </section>
+
+      {
+        p.diagram && (
+          <section class="cs-section" id="trace">
+            <h2 class="sec-title">How it works</h2>
+            <p class="sub">
+              Pick a request and watch it go through the system. The red ones are the requests I use to attack it. They end where the system is supposed to stop them.
+            </p>
+            <Diagram diagram={p.diagram} uid={`d-${entry.id}`} label={`${p.title} architecture`} />
+          </section>
+        )
+      }
+
+      <section class="cs-section" id="assertions">
+        <h2 class="sec-title">Test results</h2>
+        <p class="sub">
+          {tally.total} claims, each with the bar I held it to and what I measured. {tally.fail} failed and {tally.inconclusive} are unclear. They stay in, because a list where everything passes tells you nothing.
+        </p>
+        <div style="margin-top: 24px"><AssertionTable project={p} /></div>
+      </section>
+
+      <section class="cs-section" id="charts">
+        <h2 class="sec-title">The numbers</h2>
+        <p class="sub">Each headline is the conclusion. Open “View the data” under a chart for the exact values.</p>
+        <div class="charts" style="margin-top: 24px">
+          {p.charts.map((c, i) => <Chart chart={c} project={p} wide={isWide(c, i)} />)}
+        </div>
+      </section>
+
+      <section class="cs-section" id="failures">
+        <h2 class="sec-title">What went wrong</h2>
+        <div class="fgrid" style="margin-top: 24px">
+          {p.failures.map((f, i) => <FailureCard failure={f} project={p} slug={entry.id} n={i + 1} id={`f-${i + 1}`} />)}
+        </div>
+      </section>
+
+      <section class="cs-section" id="decisions">
+        <h2 class="sec-title">Choices I would defend</h2>
+        <ul class="decisions" style="margin-top: 24px">
+          {
+            p.decisions.map((d, i) => (
+              <li id={`d-${i + 1}`}>
+                <h3>{d.title}</h3>
+                <p>{d.why}</p>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+
+      <nav class="pn" aria-label="More projects">
+        {prev ? <a href={url(`/projects/${prev.id}`)}><small>← Previous project</small><b>{prev.title}</b></a> : <span />}
+        {next ? <a href={url(`/projects/${next.id}`)}><small>Next project →</small><b>{next.title}</b></a> : <span />}
+      </nav>
+    </div>
+  </article>
+
+  <script>
+    import '../../scripts/diagram.ts';
+  </script>
+</Base>

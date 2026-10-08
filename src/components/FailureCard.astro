@@ -1,0 +1,46 @@
+---
+import { findRepo, receiptUrl, shortRef } from '../lib/receipts.ts';
+import type { Failure, Project } from '../lib/schema.ts';
+import { url } from '../lib/url.ts';
+
+interface Props {
+  failure: Failure;
+  project: Project;
+  slug: string;
+  /** 1-based position within the project. */
+  n: number;
+  id: string;
+  /** Show a link to the project (used in the home-page failure log). */
+  showProject?: boolean;
+}
+const { failure: f, project, slug, n, id, showProject = false } = Astro.props;
+const LABEL = { fixed: 'FIXED', accepted: 'ACCEPTED RISK', open: 'STILL OPEN' } as const;
+const repo = f.receipt ? findRepo(project, f.receipt.repo) : undefined;
+---
+
+<article class="fcard" id={id} data-item data-project={slug} data-outcome={f.outcome}>
+  <header>
+    <span class={`badge outcome-${f.outcome}`}>{LABEL[f.outcome]}</span>
+    {showProject && <a class="tag" href={url(`/projects/${slug}#f-${n}`)}>{project.shortName ?? slug}</a>}
+  </header>
+  <h3>{f.title}</h3>
+  <dl>
+    <div>
+      <dt>How it surfaced</dt>
+      <dd>{f.found}</dd>
+    </div>
+    <div>
+      <dt>What I did</dt>
+      <dd>{f.fix}</dd>
+    </div>
+  </dl>
+  {
+    f.receipt && (
+      <footer>
+        <a href={receiptUrl(project, f.receipt)} rel="noopener">
+          Source: {f.receipt.path}{repo ? ` @ ${shortRef(repo)}` : ''} ↗
+        </a>
+      </footer>
+    )
+  }
+</article>

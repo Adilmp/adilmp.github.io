@@ -1,0 +1,38 @@
+{
+  "name": "adil-portfolio",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Portfolio of Adil Pervez, built as an eval harness: every claim is an assertion with a receipt.",
+  "scripts": {
+    "dev": "node scripts/eval-search.ts && astro dev --host 127.0.0.1 --port 4321",
+    "build": "node scripts/eval-search.ts && astro build",
+    "preview": "astro preview --host 127.0.0.1 --port 4321",
+    "check": "node scripts/check.ts",
+    "check:types": "astro check",
+    "test": "vitest run",
+    "new-project": "node scripts/new-project.ts",
+    "verify": "npm run check && npm test && npm run check:types && npm run build && npm run check:links",
+    "drift": "node scripts/drift.ts",
+    "check:links": "node scripts/check-links.ts"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@fontsource/bangers": "^5.3.0",
+    "@fontsource/barlow": "^5.3.0",
+    "@fontsource/oswald": "^5.3.0",
+    "@fontsource/permanent-marker": "^5.3.0",
+    "@resvg/resvg-js": "^2.6.2",
+    "astro": "^7.3.6",
+    "satori": "^0.35.1",
+    "typescript": "^6.0.3",
+    "vitest": "^5.0.3",
+    "yaml": "^2.9.1"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.4"
+  },
+  "engines": {
+    "node": ">=24"
+  }
+}

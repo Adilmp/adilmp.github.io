@@ -1,0 +1,23 @@
+---
+import { site } from '../data/site.ts';
+
+interface Props {
+  receipts?: number;
+}
+const { receipts } = Astro.props;
+---
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>
+      {receipts ? <>Before each publish, a script re-checks the {receipts} numbers linked on this site against the files they came from. </> : null}Charts and diagrams are drawn from the project data, not pasted in as images.
+    </p>
+    <p>
+      <a href={site.github} rel="me noopener">github.com/Adilmp</a>
+      {site.email && <> · <a href={`mailto:${site.email}`}>{site.email}</a></>}
+      {site.linkedin && <> · <a href={site.linkedin} rel="me noopener">LinkedIn</a></>}
+      <br />
+      © {new Date().getFullYear()} {site.fullName}
+    </p>
+  </div>
+</footer>

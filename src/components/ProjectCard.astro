@@ -1,0 +1,42 @@
+---
+import type { ProjectEntry } from '../lib/schema.ts';
+import { repoUrl } from '../lib/receipts.ts';
+import { projectColor } from '../lib/colors.ts';
+import { url } from '../lib/url.ts';
+import { renderMini } from '../lib/charts.ts';
+
+interface Props {
+  entry: ProjectEntry;
+  index: number;
+}
+const { entry, index } = Astro.props;
+const p = entry.data;
+const color = projectColor(index);
+const lead = p.charts[0];
+const attr = (t: string) => t.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+const miniSvg = lead ? renderMini(lead).replace('role="img"', `role="img" aria-label="${attr(`${lead.title}. ${lead.takeaway}`)}"`) : '';
+const repo = p.repos[0];
+---
+
+<article class="pcard" data-c={color}>
+  <div class="pcard-art">
+    {
+      lead && (
+        <figure class="mini">
+          <div class="mini-chart" set:html={miniSvg} />
+          <figcaption>{lead.takeaway}</figcaption>
+        </figure>
+      )
+    }
+  </div>
+  <div class="pcard-body">
+    <p class="pcard-idx">{p.period ?? `Project ${index + 1}`}</p>
+    <h3><a href={url(`/projects/${entry.id}`)}>{p.title}</a></h3>
+    <p class="pcard-tag">{p.tagline}</p>
+    {p.role && <p class="pcard-role"><b>What I did</b>{p.role}</p>}
+    <div class="pcard-links">
+      <a class="btn btn-sm" href={url(`/projects/${entry.id}`)}>Read the case study →</a>
+      {repo && <a class="btn btn-sm btn-ghost" href={repoUrl(repo)} rel="noopener">Code ↗</a>}
+    </div>
+  </div>
+</article>

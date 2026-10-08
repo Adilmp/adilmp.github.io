@@ -1,0 +1,64 @@
+---
+import { site } from '../data/site.ts';
+import { projectColor } from '../lib/colors.ts';
+import type { ProjectEntry } from '../lib/schema.ts';
+import { url } from '../lib/url.ts';
+
+interface Props {
+  entries: ProjectEntry[];
+}
+const { entries } = Astro.props;
+
+// The four results come from headline tiles in the project files, so the number, its label and
+// its receipt are the same ones the case study shows.
+const results = site.heroResults.flatMap((r) => {
+  const i = entries.findIndex((x) => x.id === r.project);
+  const e = entries[i];
+  const tile = e?.data.headline[r.tile];
+  return e && tile ? [{ id: e.id, title: e.data.title, value: tile.value, label: tile.label, color: projectColor(i) }] : [];
+});
+---
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <p class="kicker"><span>{site.role}</span><span>{site.location}</span></p>
+      <h1 class="name"><span>Adil</span><span>Pervez</span></h1>
+      <p class="pitch">{site.pitch}</p>
+      <p class="intro">{site.intro}</p>
+      <p class="focus">{site.focus}</p>
+      <div class="cta-row">
+        <a class="btn" href={url('/#projects')}>See the projects ↓</a>
+        {site.cv && <a class="btn btn-alt" href={url(site.cv)} download={site.cvFilename}>Download CV (PDF)</a>}
+        <a class="btn btn-ghost" href={site.github} rel="me noopener">Code on GitHub ↗</a>
+        {site.email && <a class="btn btn-ghost" href={`mailto:${site.email}`}>Email me</a>}
+      </div>
+    </div>
+
+    <aside class="glance" aria-label="At a glance">
+      <section class="glance-block">
+        <h2 class="glance-title">Experience</h2>
+        <p class="glance-big">{site.yearsInAI}<span>in the AI industry</span></p>
+      </section>
+      <section class="glance-block">
+        <h2 class="glance-title">Results</h2>
+        <ul class="tiles">
+          {
+            results.map((r) => (
+              <li class="tile" data-c={r.color}>
+                <a href={url(`/projects/${r.id}`)}>
+                  <b>{r.value}</b>
+                  <span>{r.label}</span>
+                  <em>{r.title}</em>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+      <section class="glance-block">
+        <p class="stack-line"><b>Built with</b>{site.tools.join(', ')}</p>
+      </section>
+    </aside>
+  </div>
+</section>

@@ -1,0 +1,54 @@
+---
+import type { ProjectEntry } from '../lib/schema.ts';
+import { url } from '../lib/url.ts';
+import { STATUS_WORD } from '../lib/verdict.ts';
+
+interface Props {
+  entries: ProjectEntry[];
+  stats: { total: number; pass: number; fail: number; inconclusive: number; receipts: number; failures: number };
+}
+const { entries, stats } = Astro.props;
+---
+
+<div class="wrap">
+  <h2 class="sec-title">How I check my work</h2>
+  <div class="score">
+    <div class="score-copy">
+      <ul class="score-nums" aria-label="Totals">
+        <li class="s-pass"><b>{stats.pass}</b><span>pass</span></li>
+        <li class="s-fail"><b>{stats.fail}</b><span>fail</span></li>
+        <li class="s-inconclusive"><b>{stats.inconclusive}</b><span>unclear</span></li>
+      </ul>
+      <p>
+        <strong>{stats.total} claims tested across the five projects.</strong> The failures are in there too, and each project page says what went wrong.
+      </p>
+      <p>
+        Every number links to the file it came from, pinned to a commit. A script re-checks all {stats.receipts} of them before this site is published, so a wrong number stops the deploy.
+      </p>
+    </div>
+    <div class="matrix" aria-label="One square per claim. Click a square to see it.">
+      {
+        entries.map((e) => (
+          <div class="m-group">
+            <span class="m-label">{e.data.shortName}</span>
+            <div class="m-dots">
+              {e.data.assertions.map((a, i) => (
+                <a
+                  class={`dot s-${a.status}`}
+                  href={url(`/projects/${e.id}#a-${i + 1}`)}
+                  title={`${STATUS_WORD[a.status]}: ${a.claim}`}
+                  aria-label={`${e.data.shortName}, ${STATUS_WORD[a.status]}: ${a.claim}`}
+                />
+              ))}
+            </div>
+          </div>
+        ))
+      }
+      <div class="legend" aria-hidden="true">
+        <span><i class="dot s-pass"></i> pass</span>
+        <span><i class="dot s-fail"></i> fail</span>
+        <span><i class="dot s-inconclusive"></i> unclear or not measured</span>
+      </div>
+    </div>
+  </div>
+</div>

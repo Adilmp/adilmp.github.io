@@ -1,0 +1,61 @@
+---
+import { findRepo, receiptUrl, shortRef } from '../lib/receipts.ts';
+import type { Project } from '../lib/schema.ts';
+import { STATUS_GLYPH, STATUS_WORD, projectTally } from '../lib/verdict.ts';
+
+interface Props {
+  project: Project;
+}
+const { project } = Astro.props;
+const t = projectTally(project);
+---
+
+<div data-filterable>
+  <div class="filters">
+    <div class="group" role="group" aria-label="Filter test results">
+      <span>Show</span>
+      <button type="button" class="chip" data-filter-key="status" data-filter-value="all" aria-pressed="true">All {t.total}</button>
+      {t.pass > 0 && <button type="button" class="chip" data-filter-key="status" data-filter-value="pass" aria-pressed="false">Pass {t.pass}</button>}
+      {t.fail > 0 && <button type="button" class="chip" data-filter-key="status" data-filter-value="fail" aria-pressed="false">Fail {t.fail}</button>}
+      {t.inconclusive > 0 && <button type="button" class="chip" data-filter-key="status" data-filter-value="inconclusive" aria-pressed="false">Unclear {t.inconclusive}</button>}
+    </div>
+  </div>
+  <table class="atable">
+    <thead>
+      <tr>
+        <th scope="col">Result</th>
+        <th scope="col">Claim</th>
+        <th scope="col">Expected</th>
+        <th scope="col">What I measured</th>
+        <th scope="col">Source</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        project.assertions.map((a, i) => {
+          const repo = findRepo(project, a.receipt.repo);
+          return (
+            <tr id={`a-${i + 1}`} data-item data-status={a.status}>
+              <td class="st">
+                <span class={`badge s-${a.status}`}>
+                  <span aria-hidden="true">{STATUS_GLYPH[a.status]}</span> {STATUS_WORD[a.status]}
+                </span>
+              </td>
+              <td data-label="Claim">
+                <span class="claim">{a.claim}</span>
+                {a.note && <span class="note">{a.note}</span>}
+              </td>
+              <td data-label="Expected" class:list={['exp', { none: !a.expected }]}>{a.expected ?? 'n/a'}</td>
+              <td data-label="What I measured">{a.actual}</td>
+              <td data-label="Source" class="receipt">
+                <a href={receiptUrl(project, a.receipt)} rel="noopener">{a.receipt.path} ↗</a>
+                <br />
+                {repo ? `@ ${shortRef(repo)}` : ''}
+              </td>
+            </tr>
+          );
+        })
+      }
+    </tbody>
+  </table>
+</div>

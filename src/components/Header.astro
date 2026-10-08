@@ -1,0 +1,29 @@
+---
+import { site } from '../data/site.ts';
+import { url } from '../lib/url.ts';
+---
+
+<header class="site-header">
+  <div class="wrap bar">
+    <a class="brand" href={url('/')} aria-label={`${site.name}, home`}>
+      <span class="brand-mark" aria-hidden="true">AP</span>
+      <span>{site.name}</span>
+    </a>
+    <nav aria-label="Primary">
+      <a href={url('/#projects')}>Projects</a>
+      <a href={url('/#went-wrong')}>What went wrong</a>
+      <a href={url('/#ask')}>Ask</a>
+      <a href={url('/#earlier')}>Earlier work</a>
+      <a href={url('/#about')}>About</a>
+    </nav>
+    <div class="bar-actions">
+      <a class="btn btn-sm" href={site.github} rel="me noopener">GitHub ↗</a>
+      <button class="icon-btn" id="theme-toggle" type="button" aria-label="Switch between light and dark" title="Switch between light and dark">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" aria-hidden="true">
+          <circle cx="12" cy="12" r="8"></circle>
+          <path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+</header>

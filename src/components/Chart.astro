@@ -1,0 +1,37 @@
+---
+import { chartTable, renderChart } from '../lib/charts.ts';
+import { findRepo, receiptUrl, shortRef } from '../lib/receipts.ts';
+import type { Chart, Project } from '../lib/schema.ts';
+
+interface Props {
+  chart: Chart;
+  project: Project;
+  wide?: boolean;
+}
+const { chart, project, wide = false } = Astro.props;
+const attr = (s: string) => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+const svg = renderChart(chart, wide).replace('role="img"', `role="img" aria-label="${attr(`${chart.title}. ${chart.takeaway}`)}"`);
+const table = chartTable(chart);
+const repo = findRepo(project, chart.receipt.repo);
+---
+
+<figure class:list={['chart-card', { wide }]}>
+  <h3>{chart.takeaway}</h3>
+  <p class="chart-title">{chart.title}</p>
+  <div class="chart-wrap" set:html={svg} />
+  {chart.caption && <p class="chart-caption">{chart.caption}</p>}
+  <div class="chart-meta">
+    <a href={receiptUrl(project, chart.receipt)} rel="noopener">Source: {chart.receipt.path}{repo ? ` @ ${shortRef(repo)}` : ''} ↗</a>
+    <details class="chart-data">
+      <summary>View the data</summary>
+      <table>
+        <thead>
+          <tr>{table.head.map((h) => <th scope="col">{h}</th>)}</tr>
+        </thead>
+        <tbody>
+          {table.rows.map((r) => <tr>{r.map((c) => <td>{c}</td>)}</tr>)}
+        </tbody>
+      </table>
+    </details>
+  </div>
+</figure>

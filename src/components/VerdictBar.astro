@@ -1,0 +1,21 @@
+---
+import type { Tally } from '../lib/verdict.ts';
+
+interface Props {
+  tally: Tally;
+}
+const { tally } = Astro.props;
+---
+
+<div class="verdict" role="img" aria-label={`${tally.pass} pass, ${tally.fail} fail, ${tally.inconclusive} unclear`}>
+  <div class="verdict-bar" aria-hidden="true">
+    {tally.pass > 0 && <i class="s-pass" style={`flex:${tally.pass}`} />}
+    {tally.fail > 0 && <i class="s-fail" style={`flex:${tally.fail}`} />}
+    {tally.inconclusive > 0 && <i class="s-inconclusive" style={`flex:${tally.inconclusive}`} />}
+  </div>
+  <div class="verdict-text" aria-hidden="true">
+    <span class="c-pass">{tally.pass} pass</span>
+    <span class="c-fail">{tally.fail} fail</span>
+    <span class="c-inconclusive">{tally.inconclusive} unclear</span>
+  </div>
+</div>

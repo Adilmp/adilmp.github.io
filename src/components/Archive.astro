@@ -1,0 +1,34 @@
+---
+import type { ProjectEntry } from '../lib/schema.ts';
+
+interface Props {
+  entries: ProjectEntry[];
+}
+const { entries } = Astro.props;
+---
+
+<div class="wrap">
+  <h2 class="sec-title">Earlier work</h2>
+  <p class="sub">Smaller projects from before the five above. No test results for these, just what they are and where the code is.</p>
+  <ol class="timeline">
+    {
+      entries.map((e) => (
+        <li>
+          <span class="kind">{e.data.archive?.kind}</span>
+          <div>
+            <h3>{e.data.title}</h3>
+            <p>{e.data.archive?.blurb}</p>
+            <div class="tags">
+              {e.data.stack.map((s) => <span class="tag">{s}</span>)}
+            </div>
+          </div>
+          {e.data.links[0] && (
+            <a class="ext" href={e.data.links[0].url} rel="noopener">
+              {e.data.links[0].label} ↗
+            </a>
+          )}
+        </li>
+      ))
+    }
+  </ol>
+</div>

@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "portfolio",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": ["-lc", "export NVM_DIR=/mnt/data/.nvm; . $NVM_DIR/nvm.sh >/dev/null 2>&1; cd /mnt/data/portfolio && npm run dev"],
+      "port": 4321
+    }
+  ]
+}

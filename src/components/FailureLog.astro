@@ -1,0 +1,40 @@
+---
+import type { ProjectEntry } from '../lib/schema.ts';
+import FailureCard from './FailureCard.astro';
+
+interface Props {
+  entries: ProjectEntry[];
+}
+const { entries } = Astro.props;
+const all = entries.flatMap((e) => e.data.failures.map((f, i) => ({ e, f, n: i + 1 })));
+const byOutcome = (o: string) => all.filter((x) => x.f.outcome === o).length;
+---
+
+<div class="wrap" data-filterable>
+  <h2 class="sec-title">What went wrong</h2>
+  <p class="sub">
+    {all.length} things broke across the five projects: {byOutcome('fixed')} fixed, {byOutcome('accepted')} accepted as a documented risk, {byOutcome('open')} still open. Each one says how it showed up and what I did.
+  </p>
+
+  <div class="filters">
+    <div class="group" role="group" aria-label="Filter failures by project">
+      <span>Project</span>
+      <button type="button" class="chip" data-filter-key="project" data-filter-value="all" aria-pressed="true">All</button>
+      {entries.map((e) => <button type="button" class="chip" data-filter-key="project" data-filter-value={e.id} aria-pressed="false">{e.data.shortName}</button>)}
+    </div>
+    <div class="group" role="group" aria-label="Filter failures by outcome">
+      <span>Outcome</span>
+      <button type="button" class="chip" data-filter-key="outcome" data-filter-value="all" aria-pressed="true">All</button>
+      <button type="button" class="chip" data-filter-key="outcome" data-filter-value="fixed" aria-pressed="false">Fixed</button>
+      <button type="button" class="chip" data-filter-key="outcome" data-filter-value="accepted" aria-pressed="false">Accepted</button>
+      <button type="button" class="chip" data-filter-key="outcome" data-filter-value="open" aria-pressed="false">Open</button>
+    </div>
+  </div>
+
+  <div class="fgrid collapsible" data-collapsible>
+    {all.map(({ e, f, n }) => <FailureCard failure={f} project={e.data} slug={e.id} n={n} id={`fl-${e.id}-${n}`} showProject />)}
+  </div>
+  <div class="more-wrap">
+    <button type="button" class="btn" data-show-all hidden>Show all {all.length} failures</button>
+  </div>
+</div>

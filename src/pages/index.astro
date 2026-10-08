@@ -1,0 +1,51 @@
+---
+import About from '../components/About.astro';
+import Archive from '../components/Archive.astro';
+import AskWork from '../components/AskWork.astro';
+import FailureLog from '../components/FailureLog.astro';
+import Hero from '../components/Hero.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import Scoreboard from '../components/Scoreboard.astro';
+import { site } from '../data/site.ts';
+import Base from '../layouts/Base.astro';
+import { archiveOf, flagshipOf, getProjects } from '../lib/projects.ts';
+import { suiteStats } from '../lib/stats.ts';
+
+const entries = await getProjects();
+const flagship = flagshipOf(entries);
+const archive = archiveOf(entries);
+const stats = suiteStats(flagship);
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: site.fullName,
+  alternateName: site.name,
+  jobTitle: site.role,
+  url: site.url,
+  sameAs: [site.github, ...(site.linkedin ? [site.linkedin] : [])],
+  address: { '@type': 'PostalAddress', addressLocality: 'Karachi', addressCountry: 'PK' },
+  alumniOf: { '@type': 'CollegeOrUniversity', name: 'FAST National University of Computer and Emerging Sciences' },
+  knowsAbout: ['LLM evaluation', 'Retrieval-augmented generation', 'Text-to-SQL', 'Data engineering', 'Model calibration'],
+};
+---
+
+<Base jsonLd={jsonLd} receipts={stats.receipts}>
+  <Hero entries={flagship} />
+
+  <section class="block" id="projects">
+    <div class="wrap">
+      <h2 class="sec-title">Projects</h2>
+      <p class="sub">Open a card for the full write-up: what I built, how I tested it, the results, and what went wrong.</p>
+      <div class="pgrid">
+        {flagship.map((e, i) => <ProjectCard entry={e} index={i} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="checks"><Scoreboard entries={flagship} stats={stats} /></section>
+  <section class="block" id="went-wrong"><FailureLog entries={flagship} /></section>
+  <section class="block" id="ask"><AskWork /></section>
+  <section class="block" id="earlier"><Archive entries={archive} /></section>
+  <section class="block" id="about"><About /></section>
+</Base>
