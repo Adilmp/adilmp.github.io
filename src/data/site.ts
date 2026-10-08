@@ -9,7 +9,7 @@ export const site = {
   description:
     'Adil Pervez is an AI engineer in Karachi. Five projects with code, results and what went wrong: text-to-SQL guardrails, RAG with checked answers, a PySpark pipeline, an LLM calibration audit and a video classifier.',
   /** The one-line pitch under the name. */
-  pitch: 'I break LLM systems on purpose, and publish what I find.',
+  pitch: 'I build LLM systems, then try to break them, and publish the results.',
   intro:
     'Five projects, each with the code, the numbers and what went wrong along the way. Every number links to the file it came from.',
   focus: 'LLM evaluation · RAG · text-to-SQL guardrails · data pipelines',
