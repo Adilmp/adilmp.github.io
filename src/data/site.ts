@@ -27,8 +27,8 @@ export const site = {
   github: 'https://github.com/Adilmp',
   /** Set to e.g. '/img/adil.jpg' (file in /public) to show a photo; null shows the monogram. */
   photo: '/img/adil.jpg' as string | null,
-  email: null as string | null,
-  linkedin: null as string | null,
+  email: 'adilmp14@gmail.com' as string | null,
+  linkedin: 'https://www.linkedin.com/in/adil-muhammad-pervez' as string | null,
   /** Your own CV, served from /public. Replace the file to update it; the filename below is what visitors get. */
   cv: '/adil-pervez-cv.pdf' as string | null,
   cvFilename: 'Adil_Pervez_CV_AI_Engineer.pdf',

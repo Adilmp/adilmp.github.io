@@ -53,4 +53,4 @@ Push this folder to a GitHub repo and enable Pages with the "GitHub Actions" sou
 
 - The search box's test questions were written by the same person who wrote the passages, there are 17 held-out questions, and I looked at aggregate held-out scores while improving the algorithm. Treat its numbers as a sanity check, not a benchmark.
 - A few test results encode judgement, for example that a validation score picked by best checkpoint is optimistic. Each one lists the evidence it rests on.
-- Email and LinkedIn are not set in `src/data/site.ts` yet; they render only when set. Experience, education and skills in `site.ts` are copied from the CV and must be kept in step with it by hand.
+- Email and LinkedIn live in `src/data/site.ts` and render only when set. Experience, education and skills in `site.ts` are copied from the CV and must be kept in step with it by hand.
