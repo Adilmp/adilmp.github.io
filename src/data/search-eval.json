@@ -5,10 +5,10 @@
     "minCoverage": 0.5,
     "minScore": 3
   },
-  "passages": 153,
+  "passages": 158,
   "dev": {
-    "n": 46,
-    "correct": 43
+    "n": 48,
+    "correct": 44
   },
   "test": {
     "n": 17,
