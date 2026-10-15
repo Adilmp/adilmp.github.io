@@ -34,11 +34,6 @@ export const site = {
    */
   heroFindings: [
     {
-      project: 'jev-calibration-audit',
-      tile: 0,
-      text: 'An AI model said it was about 75% sure. Humans flagged only 10% of those comments. A two-parameter fit then removed 96% of the error.',
-    },
-    {
       project: 'text-to-sql-guardrails',
       tile: 0,
       text: 'Asked questions in English, Arabic and Urdu, a database assistant answered 85% correctly, and no harmful statement ran.',
