@@ -105,6 +105,15 @@ for (const r of site.heroResults) {
   else if (!e.data.headline[r.tile]) bad('site.ts', `heroResults: ${r.project} has no headline tile ${r.tile}`);
 }
 
+// Each first-screen finding must sit on a real headline tile and contain that tile's number verbatim.
+if (site.heroFindings.length < 1 || site.heroFindings.length > 4) bad('site.ts', 'heroFindings must list 1 to 4 findings');
+for (const f of site.heroFindings) {
+  const tile = entries.find((x) => x.id === f.project)?.data.headline[f.tile];
+  if (!tile) bad('site.ts', `heroFindings: ${f.project} has no headline tile ${f.tile}`);
+  else if (!f.text.includes(tile.value)) bad('site.ts', `heroFindings: text for ${f.project} must contain "${tile.value}"`);
+  if (f.text.includes('\u2014')) bad('site.ts', `heroFindings: no em dashes in ${f.project} text`);
+}
+
 // The CV behind the download button must exist and really be a PDF.
 if (site.cv) {
   const cvPath = join(ROOT, 'public', site.cv.replace(/^\//, ''));

@@ -65,6 +65,15 @@ describe('first screen', () => {
       expect(tile!.receipt.path.length).toBeGreaterThan(0);
     }
   });
+  it('shows plain findings, each containing the number of a real headline tile', () => {
+    expect(site.heroFindings.length).toBeGreaterThan(0);
+    for (const f of site.heroFindings) {
+      const tile = entries.find((e) => e.id === f.project)?.data.headline[f.tile];
+      expect(tile, `${f.project} tile ${f.tile}`).toBeDefined();
+      expect(f.text).toContain(tile!.value);
+      expect(f.text).not.toContain('\u2014');
+    }
+  });
   it.each(flagship.map((e) => [e.id, e] as const))('%s: has a role line for the project card', (_id, e) => {
     expect(e.data.role?.length ?? 0).toBeGreaterThan(10);
   });

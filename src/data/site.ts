@@ -8,8 +8,13 @@ export const site = {
   title: 'Adil Pervez | AI engineer: LLM evaluation, RAG, text-to-SQL, data pipelines',
   description:
     'Adil Pervez is an AI engineer in Karachi. Five projects with code, results and what went wrong: text-to-SQL guardrails, RAG with checked answers, a PySpark pipeline, an LLM calibration audit and a video classifier.',
-  /** The one-line pitch under the name. */
-  pitch: 'I build LLM systems, then try to break them, and publish the results.',
+  /** The first-screen headline (also the subtitle on share cards). */
+  pitch: 'Everyone ships AI. I find out if it works.',
+  /** One line under the headline. */
+  subline: 'I test AI systems, find where they break, and build the fix.',
+  /** The one primary call to action on the first screen. */
+  ctaLabel: 'Email me',
+  ctaHint: 'Hiring, or need your AI audited?',
   intro:
     'Five projects, each with the code, the numbers and what went wrong along the way. Every number links to the file it came from.',
   focus: 'LLM evaluation · RAG · text-to-SQL guardrails · data pipelines',
@@ -22,6 +27,27 @@ export const site = {
     { project: 'bookmind', tile: 0 },
     { project: 'pk-ecommerce-pipeline', tile: 0 },
     { project: 'jev-calibration-audit', tile: 0 },
+  ],
+  /**
+   * Plain-language findings on the first screen. Each is tied to a headline tile, so the number
+   * has a receipt: `text` must contain the tile's value verbatim (the check enforces it).
+   */
+  heroFindings: [
+    {
+      project: 'jev-calibration-audit',
+      tile: 0,
+      text: 'An AI model said it was about 75% sure. Humans flagged only 10% of those comments. A two-parameter fit then removed 96% of the error.',
+    },
+    {
+      project: 'text-to-sql-guardrails',
+      tile: 0,
+      text: 'Asked questions in English, Arabic and Urdu, a database assistant answered 85% correctly, and no harmful statement ran.',
+    },
+    {
+      project: 'bookmind',
+      tile: 0,
+      text: 'A book Q&A tool had the right chapter in its top 5 results 95% of the time, and marked none of 29 bad sentences as supported.',
+    },
   ],
   tools: ['Python', 'PySpark', 'SQL', 'PostgreSQL', 'FastAPI', 'PyTorch', 'Docker', 'Ollama'],
   github: 'https://github.com/Adilmp',
