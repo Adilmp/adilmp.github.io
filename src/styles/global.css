@@ -638,7 +638,7 @@ section.block {
   margin: 0;
   padding: 8px 12px;
   background: var(--paper-2);
-  border-left: 5px solid var(--c);
+  border: 2px solid var(--line);
   font-size: 0.98rem;
 }
 .pcard-role b {
@@ -1548,7 +1548,6 @@ section.block {
   padding: 10px 16px;
   background: var(--card);
   border: var(--b) solid var(--line);
-  border-left: 10px solid var(--c, var(--accent));
   box-shadow: var(--hard-sm);
   font-size: 1.05rem;
 }
@@ -1976,7 +1975,7 @@ details.chart-data td {
   }
 }
 .score-nums li {
-  animation: pop 0.45s cubic-bezier(0.2, 1.4, 0.4, 1) both;
+  animation: pop 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 @media (prefers-reduced-motion: reduce) {
   *,
