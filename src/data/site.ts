@@ -39,6 +39,11 @@ export const site = {
       text: 'Asked questions in English, Arabic and Urdu, a database assistant answered 85% correctly, and no harmful statement ran.',
     },
     {
+      project: 'table-tennis-strokes',
+      tile: 0,
+      text: 'A video model I fine-tuned names the table-tennis stroke in a clip correctly 85.8% of the time on its validation clips, and runs on a CPU in 1 to 2 seconds.',
+    },
+    {
       project: 'bookmind',
       tile: 0,
       text: 'A book Q&A tool had the right chapter in its top 5 results 95% of the time, and marked none of 29 bad sentences as supported.',
