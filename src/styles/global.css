@@ -442,6 +442,11 @@ section.block {
   justify-items: start;
   gap: 12px;
 }
+.cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
 .cta-hint {
   margin: 0;
   font: 700 clamp(1.15rem, 2vw, 1.4rem) / 1.25 var(--body);
