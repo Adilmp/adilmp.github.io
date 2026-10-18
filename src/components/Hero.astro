@@ -40,8 +40,8 @@ const findings = site.heroFindings.flatMap((f) => {
       {
         site.email && (
           <div class="cta-block">
-            <a class="btn" href={`mailto:${site.email}`}>{site.ctaLabel}</a>
             <p class="cta-hint">{site.ctaHint}</p>
+            <a class="btn" href={`mailto:${site.email}`}>{site.ctaLabel}</a>
           </div>
         )
       }

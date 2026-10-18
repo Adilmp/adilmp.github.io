@@ -438,15 +438,13 @@ section.block {
   font: 700 clamp(1.25rem, 2.2vw, 1.6rem) / 1.25 var(--body);
 }
 .cta-block {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 10px 18px;
+  display: grid;
+  justify-items: start;
+  gap: 12px;
 }
 .cta-hint {
   margin: 0;
-  color: var(--muted);
-  font-size: 1.05rem;
+  font: 700 clamp(1.15rem, 2vw, 1.4rem) / 1.25 var(--body);
 }
 
 /* three plain-language findings, each linked to its case study */
