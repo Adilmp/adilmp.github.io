@@ -437,6 +437,13 @@ section.block {
   margin: 0 0 28px;
   font: 700 clamp(1.25rem, 2.2vw, 1.6rem) / 1.25 var(--body);
 }
+.availability {
+  margin: -14px 0 26px;
+  color: var(--muted);
+  font: 600 0.95rem/1.4 var(--label);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
 .cta-block {
   display: grid;
   justify-items: start;
