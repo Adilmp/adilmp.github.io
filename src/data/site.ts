@@ -9,7 +9,7 @@ export const site = {
   description:
     'Adil Pervez is an AI engineer in Karachi. Five projects with code, results and what went wrong: text-to-SQL guardrails, RAG with checked answers, a PySpark pipeline, an LLM calibration audit and a video classifier.',
   /** The first-screen headline (also the subtitle on share cards). */
-  pitch: 'Everyone ships AI. I find out if it works.',
+  pitch: 'I build LLM systems and prove they work.',
   /** One line under the headline. */
   subline: 'I test AI systems, find where they break, and build the fix.',
   /** The one primary call to action on the first screen. */
