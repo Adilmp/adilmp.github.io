@@ -2,19 +2,21 @@
 export const site = {
   name: 'Adil Pervez',
   fullName: 'Adil Muhammad Pervez',
-  role: 'AI engineer',
+  role: 'AI Engineer',
   location: 'Karachi, Pakistan',
   url: 'https://adilmp.github.io',
   title: 'Adil Pervez | AI engineer: LLM evaluation, RAG, text-to-SQL, data pipelines',
   description:
     'Adil Pervez is an AI engineer in Karachi. Five projects with code, results and what went wrong: text-to-SQL guardrails, RAG with checked answers, a PySpark pipeline, an LLM calibration audit and a video classifier.',
   /** The first-screen headline (also the subtitle on share cards). */
-  pitch: 'Everyone ships AI. I find out if it works.',
+  pitch: 'I build LLM systems and prove they work.',
   /** One line under the headline. */
   subline: 'I test AI systems, find where they break, and build the fix.',
   /** The one primary call to action on the first screen. */
   ctaLabel: 'Email me',
-  ctaHint: 'Hiring, or need your AI audited?',
+  ctaHint: 'Hiring an AI engineer?',
+  /** Shown under the subline on the first screen. */
+  availability: 'Available immediately · Remote, or hybrid and onsite in Pakistan',
   intro:
     'Five projects, each with the code, the numbers and what went wrong along the way. Every number links to the file it came from.',
   focus: 'LLM evaluation · RAG · text-to-SQL guardrails · data pipelines',
@@ -62,32 +64,30 @@ export const site = {
   yearsInAI: '2 years',
   /**
    * Copied from the CV that is sent to employers (public/adil-pervez-cv.pdf). Keep the two in step.
-   * `title` matches the CV but is deliberately not shown on the site; `focus` is what the site shows instead.
    */
   experience: [
     {
-      title: 'LLM Business Analyst',
-      focus: 'LLM evaluation and test design',
+      title: 'LLM Evaluation Engineer',
       org: 'Turing',
       kind: 'Contract',
       place: 'United States, remote',
       when: 'Mar 2026 \u2013 Jun 2026',
       points: [
-        'Designed 200+ structured test prompts with pass/fail criteria to evaluate LLM reasoning across mathematics, logic, and domain-specific tasks.',
-        'Documented recurring model failure patterns in written reports used to improve training-data pipelines.',
-        'Worked with distributed teams to resolve ambiguous outputs and refine evaluation guidelines for a high-volume workflow.',
+        "Generated RLHF preference data in Turing's post-training pipeline used to align frontier LLMs.",
+        'Scored model responses on math, logic and domain reasoning against rubrics, feeding the reward signal.',
+        'Analyzed model failure modes and edge cases, documenting rationales that drove training-data fixes.',
       ],
     },
     {
-      title: 'Data Annotator',
-      focus: 'Medical and legal LLM evaluation',
+      title: 'AI Data Quality Engineer',
       org: 'CNTXT AI',
-      kind: 'Contract',
+      kind: null,
       place: 'United Arab Emirates, remote',
       when: 'Jun 2024 \u2013 Jan 2026',
       points: [
-        'Evaluated medical and legal LLM outputs against strict rubrics, flagging hallucinations and policy violations.',
-        'Labeled and validated large volumes of text data for NLP training pipelines, maintaining high inter-annotator agreement.',
+        'Evaluated medical and legal LLM outputs for accuracy and safety, flagging hallucinations and policy breaches.',
+        'Validated large-scale text, image and video datasets for LLM and computer vision training.',
+        'Identified systematic failure patterns and edge cases, improving dataset reliability for downstream models.',
       ],
     },
   ],
@@ -100,13 +100,14 @@ export const site = {
     },
   ],
   skills: [
-    { label: 'LLMs and GenAI', items: 'LLM API integration (Claude / Anthropic API, Ollama), prompt engineering and optimization, RAG, LLM evaluation, hallucination detection' },
-    { label: 'ML and NLP', items: 'PyTorch, Hugging Face Transformers, model fine-tuning, NLP text normalization, retrieval metrics (Recall@k, MRR)' },
-    { label: 'Engineering', items: 'Python, FastAPI, REST APIs, SQL (PostgreSQL, SQLite), Pandas, NumPy, Streamlit, Docker, Git, pytest' },
+    { label: 'LLMs and agents', items: 'LangChain, LangGraph, AI agents, tool calling, RAG, prompt engineering, LLM APIs' },
+    { label: 'LLM evaluation and data', items: 'Eval harnesses, guardrails, hallucination detection, RLHF and preference data, CI gates' },
+    { label: 'ML and deep learning', items: 'PyTorch, Hugging Face Transformers, fine-tuning, computer vision, NLP, Recall@k, MRR' },
+    { label: 'Engineering', items: 'Python, FastAPI, REST APIs, SQL (PostgreSQL, SQLite), Pandas, Docker, Git, GitHub Actions, pytest' },
   ],
   about: [
-    "I'm Adil, an AI engineer in Karachi with two years of industry experience in AI. I've evaluated large language models for US and UAE AI companies (Turing, CNTXT AI).",
-    "I build LLM-powered applications in Python (RAG, text-to-SQL) that put model APIs behind REST services, and I've fine-tuned transformer models with Hugging Face.",
+    "I'm Adil, an AI engineer in Karachi with two years of industry experience at US and UAE AI companies (Turing, CNTXT AI), building RLHF preference data and training datasets for frontier LLMs and computer vision models.",
+    'I build production-style LLM applications in Python (RAG pipelines, SQL agents with guardrails) with evaluation harnesses and CI gates, and I fine-tune transformer models with PyTorch and Hugging Face.',
     'It shapes how I work: decide what "working" means, try to break it, and publish the numbers, including the bad ones.',
   ],
 } as const;

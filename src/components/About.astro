@@ -16,6 +16,21 @@ import { url } from '../lib/url.ts';
         {site.education.map((e) => <div><dt>Education</dt><dd>{e.degree}, {e.school}, {e.when}</dd></div>)}
         <div><dt>Focus</dt><dd>{site.focus.replaceAll(' · ', ', ')}</dd></div>
       </dl>
+      <h3 class="xp-title">Experience</h3>
+      <ul class="xp">
+        {
+          site.experience.map((x) => (
+            <li>
+              <h3>{x.title}</h3>
+              <p class="focus-line">{x.org}</p>
+              <p class="meta">{[x.kind, x.place, x.when].filter(Boolean).join(' · ')}</p>
+              <ul>
+                {x.points.map((pt) => <li>{pt}</li>)}
+              </ul>
+            </li>
+          ))
+        }
+      </ul>
       <dl class="skills">
         {site.skills.map((x) => <div><b>{x.label}</b>{x.items}</div>)}
       </dl>
